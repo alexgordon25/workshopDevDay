@@ -1,29 +1,95 @@
-# Create T3 App
+# Todo App
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+A full-stack Todo application with authentication built with the [T3 Stack](https://create.t3.gg/).
 
-## What's next? How do I make an app with this?
+## Features
 
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
+- **Authentication** — Register and sign in with email and password (powered by Better Auth)
+- **Todo Management** — Create todos with a title and optional description
+- **Status Tracking** — Move todos through three statuses: `PENDING` → `IN PROGRESS` → `DONE`
+- **Data Isolation** — Each user only sees their own todos
+- **BDD Documentation** — Full Behavior-Driven Development docs in `docs/bdd/`
 
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+## Tech Stack
 
-- [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [Drizzle](https://orm.drizzle.team)
-- [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
+- [Next.js 15](https://nextjs.org) — React framework with App Router
+- [Better Auth](https://www.better-auth.com) — Authentication (email/password)
+- [Drizzle ORM](https://orm.drizzle.team) — Type-safe ORM with SQLite
+- [tRPC](https://trpc.io) — End-to-end typesafe APIs
+- [Tailwind CSS](https://tailwindcss.com) — Utility-first styling
+- [React Query](https://tanstack.com/query) — Server state management
 
-## Learn More
+## Getting Started
 
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
+### 1. Install dependencies
 
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
+```bash
+npm install
+```
 
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
+### 2. Set up environment variables
 
-## How do I deploy this?
+Copy `.env.example` to `.env` and fill in the values:
 
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+```bash
+cp .env.example .env
+```
+
+| Variable             | Description                              |
+|----------------------|------------------------------------------|
+| `BETTER_AUTH_SECRET` | Random secret string for auth signing    |
+| `DATABASE_URL`       | SQLite file path (e.g. `file:./db.sqlite`) |
+
+### 3. Push the database schema
+
+```bash
+npm run db:push
+```
+
+### 4. Start the development server
+
+```bash
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+## Project Structure
+
+```
+src/
+├── app/
+│   ├── sign-in/          # Sign-in page
+│   ├── sign-up/          # Sign-up / registration page
+│   ├── todos/            # Protected todo list page
+│   └── _components/      # Shared UI components
+│       ├── create-todo-form.tsx
+│       ├── todo-list.tsx
+│       └── todo-item.tsx
+├── server/
+│   ├── api/routers/      # tRPC routers (post, todo)
+│   ├── better-auth/      # Auth config and helpers
+│   └── db/               # Drizzle schema and client
+└── trpc/                 # tRPC client setup
+```
+
+## Database Scripts
+
+| Command           | Description                        |
+|-------------------|------------------------------------|
+| `npm run db:push` | Push schema changes to the database |
+| `npm run db:generate` | Generate migration files        |
+| `npm run db:migrate`  | Run pending migrations          |
+| `npm run db:studio`   | Open Drizzle Studio (DB GUI)    |
+
+## BDD Documentation
+
+This project was built following a **Behavior-Driven Development (BDD)** approach.
+Learning resources are available in `docs/bdd/`:
+
+| File | Content |
+|------|---------|
+| `00-what-is-bdd.md` | Introduction to BDD and Gherkin syntax |
+| `01-user-stories.md` | All user stories written in Gherkin |
+| `02-gherkin-to-code.md` | How each scenario maps to actual code |
+| `03-bdd-workflow.md` | The full BDD workflow used in this project |
