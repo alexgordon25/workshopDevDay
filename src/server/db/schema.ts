@@ -5,6 +5,37 @@ import { index, sqliteTable } from "drizzle-orm/sqlite-core";
  * Multi-project schema prefix helper
  */
 
+// Todos table
+export const todos = sqliteTable(
+  "todo",
+  (d) => ({
+    id: d.integer({ mode: "number" }).primaryKey({ autoIncrement: true }),
+    title: d.text({ length: 256 }).notNull(),
+    description: d.text(),
+    status: d
+      .text({ enum: ["PENDING", "IN_PROGRESS", "DONE"] })
+      .notNull()
+      .default("PENDING"),
+    userId: d
+      .text({ length: 255 })
+      .notNull()
+      .references(() => user.id),
+    createdAt: d
+      .integer({ mode: "timestamp" })
+      .default(sql`(unixepoch())`)
+      .notNull(),
+    updatedAt: d.integer({ mode: "timestamp" }).$onUpdate(() => new Date()),
+  }),
+  (t) => [
+    index("todo_user_id_idx").on(t.userId),
+    index("todo_status_idx").on(t.status),
+  ]
+);
+
+export const todoRelations = relations(todos, ({ one }) => ({
+  user: one(user, { fields: [todos.userId], references: [user.id] }),
+}));
+
 // Posts example table
 export const posts = sqliteTable(
   "post",
